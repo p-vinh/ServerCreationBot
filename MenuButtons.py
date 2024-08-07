@@ -1,6 +1,7 @@
 import discord
 import asyncio
 from ChannelCreationModal import ChannelTypeSelectModal
+from DeleteChannel import DeleteChannelTypeSelectMenu
 from ChannelEdit import ChannelEditModal
 
 # This class creates a menu with three buttons: Create Channel, Edit Channel, and Delete Channel
@@ -26,4 +27,5 @@ class MenuButtons(discord.ui.View):
     # Discord UI buttons for the Deleting a Channel
     @discord.ui.button(label="Delete Channel", style=discord.ButtonStyle.danger)
     async def delete_channel_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.send_message("Delete Channel")
+        delete_menu = DeleteChannelTypeSelectMenu(self.client)
+        await delete_menu.send_select_menu(interaction)

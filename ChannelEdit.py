@@ -2,7 +2,7 @@ import discord
 import asyncio
 from ChannelCreationModal import ChannelNameModal
 
-
+# Displays a modal for the user to select a channel to edit
 class ChannelEditModal(discord.ui.Select):
     def __init__(self, client, interaction):
         super().__init__()
@@ -26,6 +26,7 @@ class ChannelEditModal(discord.ui.Select):
                         discord.SelectOption(label=channel.name, value=channel.id)
                     )
 
+        # Join both text and voice channels into one list
         self.options = text_channels + voice_channels
         self.placeholder = "Select Channel to Edit"
         self.max_values = 1
@@ -34,6 +35,7 @@ class ChannelEditModal(discord.ui.Select):
         view = discord.ui.View()
         view.add_item(self)
 
+        # Callback function for when the user selects a channel
         async def select_callback(interaction: discord.Interaction):
             channel_id = self.values[0]
             await interaction.response.send_modal(

@@ -23,17 +23,19 @@ class ChannelTypeSelectModal(discord.ui.Select):
         async def select_callback(interaction: discord.Interaction):
             channel_type = self.values[0]
             await interaction.response.send_modal(
-                ChannelNameModal(self.client, channel_type)
+                ChannelNameModal(self.client, channel_type, "create")
             )
 
         self.callback = select_callback
         await interaction.response.send_message(
             "Select a channel type:", view=view, ephemeral=True
         )
-
+        
+        if self.values[0] == "none":
+            await interaction.response.send_message("No channel type selected.", ephemeral=True)
 
 class ChannelNameModal(discord.ui.Modal):
-    def __init__(self, client, channel_type):
+    def __init__(self, client, channel_type, operation: str):
         super().__init__(title="Enter Channel Name")
         self.client = client
         self.channel_type = channel_type
@@ -44,18 +46,28 @@ class ChannelNameModal(discord.ui.Modal):
             style=discord.TextStyle.short,
             required=True,
         )
+        self.operation = operation
         self.add_item(self.channel_name)
 
     async def on_submit(self, interaction: discord.Interaction):
         name = self.channel_name.value.strip()
-
-        if self.channel_type == "text":
-            await interaction.guild.create_text_channel(name)
-            await interaction.response.send_message(
-                f"Text channel '{name}' created.", ephemeral=True
-            )
-        elif self.channel_type == "voice":
-            await interaction.guild.create_voice_channel(name)
-            await interaction.response.send_message(
-                f"Voice channel '{name}' created.", ephemeral=True
-            )
+        if self.operation == "create":
+            if self.channel_type == "text":
+                await interaction.guild.create_text_channel(name)
+                await interaction.response.send_message(
+                    f"Text channel '{name}' created.", ephemeral=True
+                )
+            elif self.channel_type == "voice":
+                await interaction.guild.create_voice_channel(name)
+                await interaction.response.send_message(
+                    f"Voice channel '{name}' created.", ephemeral=True
+                )
+        elif self.operation == "edit":
+            channel_id = self.channel_id
+            channel = interaction.guild.get_channel(channel_id)
+            if channel:
+                await channel.edit(name=name)
+                await interaction.response.send_message(
+                    f"Channel '{name}' edited.", ephemeral=True
+                )
+        

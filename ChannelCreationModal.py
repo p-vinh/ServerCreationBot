@@ -68,12 +68,12 @@ class ChannelNameModal(discord.ui.Modal):
                 )
         else:
             # Handle the creation logic if necessary
-            if self.channel_type == "text":
+            if self.channel_id == "text":
                 await guild.create_text_channel(name)
                 await interaction.response.send_message(
                     f"Text channel '{name}' created.", ephemeral=True
                 )
-            elif self.channel_type == "voice":
+            elif self.channel_id == "voice":
                 await guild.create_voice_channel(name)
                 await interaction.response.send_message(
                     f"Voice channel '{name}' created.", ephemeral=True

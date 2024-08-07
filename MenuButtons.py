@@ -1,6 +1,6 @@
 import discord
 import asyncio
-from ChannelCreationModal import ChannelCreationModal
+from ChannelCreationModal import ChannelTypeSelectModal
 
 class MenuButtons(discord.ui.View):
     def __init__(self, client):
@@ -9,8 +9,8 @@ class MenuButtons(discord.ui.View):
 
     @discord.ui.button(label="Create Channel", style=discord.ButtonStyle.primary)
     async def create_channel_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        modal = ChannelCreationModal(self.client)
-        await interaction.response.send_modal(modal)
+        modal = ChannelTypeSelectModal(self.client)
+        await modal.send_select_menu(interaction)
         
     @discord.ui.button(label="Edit Channel", style=discord.ButtonStyle.secondary)
     async def edit_channel_button(self, interaction: discord.Interaction, button: discord.ui.Button):
